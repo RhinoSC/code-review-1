@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/bootcamp-go/web/request"
 	"github.com/bootcamp-go/web/response"
 	"github.com/rhinosc/code-review-1/internal"
 )
@@ -10,6 +11,22 @@ import (
 // VehicleJSON is a struct that represents a vehicle in JSON format
 type VehicleJSON struct {
 	ID              int     `json:"id"`
+	Brand           string  `json:"brand"`
+	Model           string  `json:"model"`
+	Registration    string  `json:"registration"`
+	Color           string  `json:"color"`
+	FabricationYear int     `json:"year"`
+	Capacity        int     `json:"passengers"`
+	MaxSpeed        float64 `json:"max_speed"`
+	FuelType        string  `json:"fuel_type"`
+	Transmission    string  `json:"transmission"`
+	Weight          float64 `json:"weight"`
+	Height          float64 `json:"height"`
+	Length          float64 `json:"length"`
+	Width           float64 `json:"width"`
+}
+
+type BodyVehicleJSON struct {
 	Brand           string  `json:"brand"`
 	Model           string  `json:"model"`
 	Registration    string  `json:"registration"`
@@ -71,6 +88,73 @@ func (h *VehicleDefault) GetAll() http.HandlerFunc {
 			}
 		}
 		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "success",
+			"data":    data,
+		})
+	}
+}
+
+// Create is a method that returns a handler for the route POST /vehicles
+func (h *VehicleDefault) Create() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		//request
+		var body BodyVehicleJSON
+		err := request.JSON(r, &body)
+		if err != nil {
+			response.JSON(w, http.StatusBadRequest, "invalid body")
+			return
+		}
+
+		//process
+
+		// create vehicle
+		vehicleAttributes := internal.VehicleAttributes{
+			Brand:           body.Brand,
+			Model:           body.Model,
+			Registration:    body.Registration,
+			Color:           body.Color,
+			FabricationYear: body.FabricationYear,
+			Capacity:        body.Capacity,
+			MaxSpeed:        body.MaxSpeed,
+			FuelType:        body.FuelType,
+			Transmission:    body.Transmission,
+			Weight:          body.Weight,
+			Dimensions: internal.Dimensions{
+				Height: body.Height,
+				Length: body.Length,
+				Width:  body.Width,
+			},
+		}
+		vehicle := internal.Vehicle{
+			VehicleAttributes: vehicleAttributes,
+		}
+
+		err = h.sv.Create(&vehicle)
+		if err != nil {
+			response.JSON(w, http.StatusInternalServerError, "internal server error")
+		}
+
+		//response
+
+		// serialize vehicle to JSON
+		data := VehicleJSON{
+			ID:              vehicle.Id,
+			Brand:           vehicle.Brand,
+			Model:           vehicle.Model,
+			Registration:    vehicle.Registration,
+			Color:           vehicle.Color,
+			FabricationYear: vehicle.FabricationYear,
+			Capacity:        vehicle.Capacity,
+			MaxSpeed:        vehicle.MaxSpeed,
+			FuelType:        vehicle.FuelType,
+			Transmission:    vehicle.Transmission,
+			Weight:          vehicle.Weight,
+			Height:          vehicle.Height,
+			Length:          vehicle.Length,
+			Width:           vehicle.Width,
+		}
+
+		response.JSON(w, http.StatusCreated, map[string]any{
 			"message": "success",
 			"data":    data,
 		})

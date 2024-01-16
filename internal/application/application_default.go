@@ -58,7 +58,7 @@ func (a *ServerChi) Run() (err error) {
 		return
 	}
 	// - repository
-	rp := repository.NewVehicleMap(db)
+	rp := repository.NewVehicleMap(db, len(db))
 	// - service
 	sv := service.NewVehicleDefault(rp)
 	// - handler
@@ -72,6 +72,9 @@ func (a *ServerChi) Run() (err error) {
 	rt.Route("/vehicles", func(rt chi.Router) {
 		// - GET /vehicles
 		rt.Get("/", hd.GetAll())
+
+		// - POST /vehicles
+		rt.Post("/", hd.Create())
 	})
 
 	// run server
