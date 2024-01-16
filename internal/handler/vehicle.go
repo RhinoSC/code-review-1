@@ -2,9 +2,11 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/bootcamp-go/web/request"
 	"github.com/bootcamp-go/web/response"
+	"github.com/go-chi/chi/v5"
 	"github.com/rhinosc/code-review-1/internal"
 )
 
@@ -155,6 +157,53 @@ func (h *VehicleDefault) Create() http.HandlerFunc {
 		}
 
 		response.JSON(w, http.StatusCreated, map[string]any{
+			"message": "success",
+			"data":    data,
+		})
+	}
+}
+
+// GetByColorAndYear is a method that returns a handler for the route GET /vehicles?color={color}&year={year}
+func (h *VehicleDefault) GetByColorAndYear() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// ...
+		color := chi.URLParam(r, "color")
+		year, err := strconv.Atoi(chi.URLParam(r, "year"))
+		if err != nil {
+			response.JSON(w, http.StatusBadRequest, "invalid year")
+			return
+		}
+
+		// process
+		// - get vehicles by color and year
+		v, err := h.sv.GetByColorAndYear(color, year)
+		if err != nil {
+			response.JSON(w, http.StatusInternalServerError, "internal server error")
+			return
+		}
+
+		// response
+		data := make(map[int]VehicleJSON)
+		for key, value := range v {
+			data[key] = VehicleJSON{
+				ID:              value.Id,
+				Brand:           value.Brand,
+				Model:           value.Model,
+				Registration:    value.Registration,
+				Color:           value.Color,
+				FabricationYear: value.FabricationYear,
+				Capacity:        value.Capacity,
+				MaxSpeed:        value.MaxSpeed,
+				FuelType:        value.FuelType,
+				Transmission:    value.Transmission,
+				Weight:          value.Weight,
+				Height:          value.Height,
+				Length:          value.Length,
+				Width:           value.Width,
+			}
+		}
+		response.JSON(w, http.StatusOK, map[string]any{
 			"message": "success",
 			"data":    data,
 		})

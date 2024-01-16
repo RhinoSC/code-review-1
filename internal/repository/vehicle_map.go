@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/rhinosc/code-review-1/internal"
 	"github.com/rhinosc/code-review-1/internal/loader"
 )
@@ -44,5 +46,24 @@ func (r *VehicleMap) Create(v *internal.Vehicle) (err error) {
 
 	// save db to JSON file
 	err = r.ld.Save(r.db)
+	return
+}
+
+// GetByColorAndYear is a method that returns a map of vehicles by color and year
+func (r *VehicleMap) GetByColorAndYear(color string, year int) (v map[int]internal.Vehicle, err error) {
+	v = make(map[int]internal.Vehicle)
+
+	// filter db
+	for key, value := range r.db {
+		if value.Color == color && value.FabricationYear == year {
+			v[key] = value
+		}
+	}
+
+	if len(v) == 0 {
+		err = fmt.Errorf("no vehicles found with color %s and year %d", color, year)
+		return
+	}
+
 	return
 }
