@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/bootcamp-go/web/request"
 	"github.com/bootcamp-go/web/response"
@@ -179,7 +180,74 @@ func (h *VehicleDefault) GetByColorAndYear() http.HandlerFunc {
 		// - get vehicles by color and year
 		v, err := h.sv.GetByColorAndYear(color, year)
 		if err != nil {
-			response.JSON(w, http.StatusInternalServerError, "internal server error")
+			response.JSON(w, http.StatusNotFound, "vehicles not found")
+			return
+		}
+
+		// response
+		data := make(map[int]VehicleJSON)
+		for key, value := range v {
+			data[key] = VehicleJSON{
+				ID:              value.Id,
+				Brand:           value.Brand,
+				Model:           value.Model,
+				Registration:    value.Registration,
+				Color:           value.Color,
+				FabricationYear: value.FabricationYear,
+				Capacity:        value.Capacity,
+				MaxSpeed:        value.MaxSpeed,
+				FuelType:        value.FuelType,
+				Transmission:    value.Transmission,
+				Weight:          value.Weight,
+				Height:          value.Height,
+				Length:          value.Length,
+				Width:           value.Width,
+			}
+		}
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "success",
+			"data":    data,
+		})
+	}
+}
+
+// GetByDimensions is a method that returns a handler for the route GET /vehicles/dimensions?length={min_length}-{max_length}&width={min_width}-{max_width}
+func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// ...
+		length := r.URL.Query().Get("length")
+		width := r.URL.Query().Get("width")
+
+		lengthValues := strings.Split(length, "-")
+		widthValues := strings.Split(width, "-")
+
+		// fmt.Println(lengthValues, widthValues)
+		minLength, err := strconv.ParseFloat(lengthValues[0], 64)
+		if err != nil {
+			response.JSON(w, http.StatusBadRequest, "invalid min length")
+			return
+		}
+		maxLength, err := strconv.ParseFloat(lengthValues[1], 64)
+		if err != nil {
+			response.JSON(w, http.StatusBadRequest, "invalid max length")
+			return
+		}
+		minWidth, err := strconv.ParseFloat(widthValues[0], 64)
+		if err != nil {
+			response.JSON(w, http.StatusBadRequest, "invalid min width")
+			return
+		}
+		maxWidth, err := strconv.ParseFloat(widthValues[1], 64)
+		if err != nil {
+			response.JSON(w, http.StatusBadRequest, "invalid max width")
+			return
+		}
+		// process
+		// - get vehicles by dimensions
+		v, err := h.sv.GetByDimensions(minLength, maxLength, minWidth, maxWidth)
+		if err != nil {
+			response.JSON(w, http.StatusNotFound, "vehicles not found")
 			return
 		}
 

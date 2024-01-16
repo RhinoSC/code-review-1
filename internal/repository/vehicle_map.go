@@ -67,3 +67,22 @@ func (r *VehicleMap) GetByColorAndYear(color string, year int) (v map[int]intern
 
 	return
 }
+
+// GetByDimensions is a method that returns a map of vehicles by dimensions
+func (r *VehicleMap) GetByDimensions(minLength, maxLength, minWidth, maxWidth float64) (v map[int]internal.Vehicle, err error) {
+	v = make(map[int]internal.Vehicle)
+
+	// filter db
+	for key, value := range r.db {
+		if value.Length >= minLength && value.Length <= maxLength && value.Width >= minWidth && value.Width <= maxWidth {
+			v[key] = value
+		}
+	}
+
+	if len(v) == 0 {
+		err = fmt.Errorf("no vehicles found with dimensions between %f and %f for length and between %f and %f for width", minLength, maxLength, minWidth, maxWidth)
+		return
+	}
+
+	return
+}

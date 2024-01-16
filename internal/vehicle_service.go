@@ -10,4 +10,7 @@ type VehicleService interface {
 
 	// GetByColorAndYear is a method that returns a map of vehicles by color and year
 	GetByColorAndYear(color string, year int) (v map[int]Vehicle, err error)
+
+	// GetByDimensions is a method that returns a map of vehicles by dimensions
+	GetByDimensions(minLength, maxLength, minWidth, maxWidth float64) (v map[int]Vehicle, err error)
 }

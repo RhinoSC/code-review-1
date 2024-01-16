@@ -76,6 +76,9 @@ func (a *ServerChi) Run() (err error) {
 		// - GET /vehicles/color/{color}/year/{year}
 		rt.Get("/color/{color}/year/{year}", hd.GetByColorAndYear())
 
+		// - GET /vehicles/dimensions?length={min_length}-{max_length}&width={min_width}-{max_width}
+		rt.Get("/dimensions", hd.GetByDimensions())
+
 		// - POST /vehicles
 		rt.Post("/", hd.Create())
 	})

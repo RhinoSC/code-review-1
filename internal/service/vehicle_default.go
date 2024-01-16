@@ -37,3 +37,12 @@ func (s *VehicleDefault) GetByColorAndYear(color string, year int) (v map[int]in
 	}
 	return
 }
+
+// GetByDimensions is a method that returns a map of vehicles by dimensions
+func (s *VehicleDefault) GetByDimensions(minLength, maxLength, minWidth, maxWidth float64) (v map[int]internal.Vehicle, err error) {
+	v, err = s.rp.GetByDimensions(minLength, maxLength, minWidth, maxWidth)
+	if err != nil {
+		err = fmt.Errorf("error getting vehicles by dimensions: %w", err)
+	}
+	return
+}
