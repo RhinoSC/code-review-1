@@ -1,14 +1,14 @@
 package application
 
 import (
-	"app/internal/handler"
-	"app/internal/loader"
-	"app/internal/repository"
-	"app/internal/service"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/rhinosc/code-review-1/internal/handler"
+	"github.com/rhinosc/code-review-1/internal/loader"
+	"github.com/rhinosc/code-review-1/internal/repository"
+	"github.com/rhinosc/code-review-1/internal/service"
 )
 
 // ConfigServerChi is a struct that represents the configuration for ServerChi
@@ -35,7 +35,7 @@ func NewServerChi(cfg *ConfigServerChi) *ServerChi {
 	}
 
 	return &ServerChi{
-		serverAddress: defaultConfig.ServerAddress,
+		serverAddress:  defaultConfig.ServerAddress,
 		loaderFilePath: defaultConfig.LoaderFilePath,
 	}
 }

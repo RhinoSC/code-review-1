@@ -1,6 +1,6 @@
 package service
 
-import "app/internal"
+import "github.com/rhinosc/code-review-1/internal"
 
 // NewVehicleDefault is a function that returns a new instance of VehicleDefault
 func NewVehicleDefault(rp internal.VehicleRepository) *VehicleDefault {

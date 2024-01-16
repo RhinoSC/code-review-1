@@ -1,6 +1,6 @@
 package repository
 
-import "app/internal"
+import "github.com/rhinosc/code-review-1/internal"
 
 // NewVehicleMap is a function that returns a new instance of VehicleMap
 func NewVehicleMap(db map[int]internal.Vehicle) *VehicleMap {

@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"app/internal"
 	"net/http"
 
 	"github.com/bootcamp-go/web/response"
+	"github.com/rhinosc/code-review-1/internal"
 )
 
 // VehicleJSON is a struct that represents a vehicle in JSON format

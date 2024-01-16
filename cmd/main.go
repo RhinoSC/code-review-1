@@ -1,8 +1,9 @@
 package main
 
 import (
-	"app/internal/application"
 	"fmt"
+
+	"github.com/rhinosc/code-review-1/internal/application"
 )
 
 func main() {
@@ -12,7 +13,7 @@ func main() {
 	// app
 	// - config
 	cfg := &application.ConfigServerChi{
-		ServerAddress: ":8080",
+		ServerAddress:  ":8080",
 		LoaderFilePath: "docs/db/vehicles_100.json",
 	}
 	app := application.NewServerChi(cfg)

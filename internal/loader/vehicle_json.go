@@ -1,9 +1,10 @@
 package loader
 
 import (
-	"app/internal"
 	"encoding/json"
 	"os"
+
+	"github.com/rhinosc/code-review-1/internal"
 )
 
 // NewVehicleJSONFile is a function that returns a new instance of VehicleJSONFile
