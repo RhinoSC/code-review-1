@@ -2,20 +2,23 @@ package repository
 
 import (
 	"github.com/rhinosc/code-review-1/internal"
+	"github.com/rhinosc/code-review-1/internal/loader"
 )
 
 // NewVehicleMap is a function that returns a new instance of VehicleMap
-func NewVehicleMap(db map[int]internal.Vehicle, lastID int) *VehicleMap {
+func NewVehicleMap(ld *loader.VehicleJSONFile, db map[int]internal.Vehicle, lastID int) *VehicleMap {
 	// default db
 	defaultDb := make(map[int]internal.Vehicle)
 	if db != nil {
 		defaultDb = db
 	}
-	return &VehicleMap{db: defaultDb, lastID: lastID}
+	return &VehicleMap{ld: *ld, db: defaultDb, lastID: lastID}
 }
 
 // VehicleMap is a struct that represents a vehicle repository
 type VehicleMap struct {
+	// ld is the loader that loads the vehicles from a JSON file
+	ld loader.VehicleJSONFile
 	// db is a map of vehicles
 	db     map[int]internal.Vehicle
 	lastID int
@@ -38,5 +41,8 @@ func (r *VehicleMap) Create(v *internal.Vehicle) (err error) {
 	r.lastID++
 	v.Id = r.lastID
 	r.db[v.Id] = *v
+
+	// save db to JSON file
+	err = r.ld.Save(r.db)
 	return
 }

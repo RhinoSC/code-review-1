@@ -58,7 +58,7 @@ func (a *ServerChi) Run() (err error) {
 		return
 	}
 	// - repository
-	rp := repository.NewVehicleMap(db, len(db))
+	rp := repository.NewVehicleMap(ld, db, len(db))
 	// - service
 	sv := service.NewVehicleDefault(rp)
 	// - handler

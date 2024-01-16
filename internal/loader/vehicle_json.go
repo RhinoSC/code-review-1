@@ -2,6 +2,7 @@ package loader
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 
 	"github.com/rhinosc/code-review-1/internal"
@@ -79,5 +80,42 @@ func (l *VehicleJSONFile) Load() (v map[int]internal.Vehicle, err error) {
 		}
 	}
 
+	return
+}
+
+// Save is a method that saves the vehicles
+func (l *VehicleJSONFile) Save(v map[int]internal.Vehicle) (err error) {
+	f, err := os.OpenFile(l.path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer f.Close()
+
+	var vehiclesJSON []VehicleJSON
+	for _, vh := range v {
+		vehiclesJSON = append(vehiclesJSON, VehicleJSON{
+			Id:              vh.Id,
+			Brand:           vh.Brand,
+			Model:           vh.Model,
+			Registration:    vh.Registration,
+			Color:           vh.Color,
+			FabricationYear: vh.FabricationYear,
+			Capacity:        vh.Capacity,
+			MaxSpeed:        vh.MaxSpeed,
+			FuelType:        vh.FuelType,
+			Transmission:    vh.Transmission,
+			Weight:          vh.Weight,
+			Height:          vh.Height,
+			Length:          vh.Length,
+			Width:           vh.Width,
+		})
+	}
+
+	err = json.NewEncoder(f).Encode(vehiclesJSON)
+	if err != nil {
+		fmt.Println("error encoding file: ", l.path)
+		return
+	}
 	return
 }
