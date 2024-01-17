@@ -46,3 +46,12 @@ func (s *VehicleDefault) GetByDimensions(minLength, maxLength, minWidth, maxWidt
 	}
 	return
 }
+
+// GetAverageSpeedByBrand is a method that returns the average speed of a vehicle
+func (s *VehicleDefault) GetAverageSpeedByBrand(brand string) (averageSpeed float64, err error) {
+	averageSpeed, err = s.rp.GetAverageSpeedByBrand(brand)
+	if err != nil {
+		err = fmt.Errorf("error getting average speed by brand: %w", internal.ErrVehicleNotFound)
+	}
+	return
+}

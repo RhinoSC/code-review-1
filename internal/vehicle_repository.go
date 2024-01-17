@@ -13,4 +13,7 @@ type VehicleRepository interface {
 
 	// GetByDimensions is a method that returns a map of vehicles by dimensions
 	GetByDimensions(minLength, maxLength, minWidth, maxWidth float64) (v map[int]Vehicle, err error)
+
+	// GetAverageSpeedByBrand is a method that returns the average speed of a vehicle
+	GetAverageSpeedByBrand(brand string) (averageSpeed float64, err error)
 }

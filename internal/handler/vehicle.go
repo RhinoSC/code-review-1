@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -274,6 +275,39 @@ func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
 		response.JSON(w, http.StatusOK, map[string]any{
 			"message": "success",
 			"data":    data,
+		})
+	}
+}
+
+// GetAverageSpeedByBrand is a method that returns a handler for the route GET /vehicles/average_speed/brand/{brand}
+func (h *VehicleDefault) GetAverageSpeedByBrand() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// - get brand from URL
+		brand := chi.URLParam(r, "brand")
+		if brand == "" {
+			response.JSON(w, http.StatusBadRequest, "invalid brand")
+			return
+		}
+
+		// process
+		// - get average speed by brand
+		averageSpeed, err := h.sv.GetAverageSpeedByBrand(brand)
+		if err != nil {
+			switch {
+			case errors.Is(err, internal.ErrVehicleNotFound):
+				response.JSON(w, http.StatusNotFound, "vehicles not found")
+			default:
+				response.JSON(w, http.StatusInternalServerError, "internal server error")
+			}
+			return
+		}
+
+		// response
+		// - deserialize average speed to JSON
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "success",
+			"data":    averageSpeed,
 		})
 	}
 }

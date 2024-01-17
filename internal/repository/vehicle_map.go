@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/rhinosc/code-review-1/internal"
 	"github.com/rhinosc/code-review-1/internal/loader"
@@ -83,6 +84,34 @@ func (r *VehicleMap) GetByDimensions(minLength, maxLength, minWidth, maxWidth fl
 		err = fmt.Errorf("no vehicles found with dimensions between %f and %f for length and between %f and %f for width", minLength, maxLength, minWidth, maxWidth)
 		return
 	}
+
+	return
+}
+
+// GetAverageSpeedByBrand is a method that returns the average speed of a vehicle
+func (r *VehicleMap) GetAverageSpeedByBrand(brand string) (averageSpeed float64, err error) {
+
+	if brand == "" {
+		err = fmt.Errorf("brand is required")
+		return
+	}
+
+	var brandCount int
+
+	//filter db
+	for _, value := range r.db {
+		if strings.EqualFold(value.Brand, brand) {
+			brandCount++
+			averageSpeed += value.MaxSpeed
+		}
+	}
+
+	if brandCount == 0 {
+		err = fmt.Errorf("no vehicles found with brand %s", brand)
+		return
+	}
+
+	averageSpeed /= float64(brandCount)
 
 	return
 }
